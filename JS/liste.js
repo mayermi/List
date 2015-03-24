@@ -1,18 +1,21 @@
 (function() {
 	$(document).ready(function() {
 		console.log('loaded');
+		var maximumID = 1;
 
-		$.getJSON("./Data/Data.json", function(data) {
+		while (!(localStorage.getItem('ID=' + maximumID) === null)) {
 
-			$.each(data, function(id) {
-				$("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + data[id].id + " \">"
-					+ data[id].title 
+			var element = localStorage.getItem('ID=' + maximumID).split(',');
+
+			$("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + maximumID + " \">"
+					+ element[0] 
 					+ '<br>'
-					+ data[id].description
+					+ element[1]
 					+ '</a>'
 					+ '</li>'
 				);
-			});
-		});
+
+  			maximumID++;
+		}
 	});
 })();
