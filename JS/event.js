@@ -5,13 +5,9 @@
 		var query = window.location.search.substring(1);
     	var eventid = query.split("=")[1];
 
-    	console.log(eventid);
-
-    	$.getJSON("./Data/Data.json", function(data) {
-
-    		$('#title').text(data[eventid].title);
-			
-			$('main').append("<p>" + data[eventid].description + "</p>");
-		});
+		var element = localStorage.getItem('ID=' + eventid).split(',');
+		
+		$('#title').text(element[0]);
+		$('main').append("<p>" + element[1] + "</p>");
 	});
 })();
