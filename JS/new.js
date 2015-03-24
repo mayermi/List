@@ -3,11 +3,14 @@
 		console.log('loaded');
 		var maximumID = 1;
 
-		$.getJSON("./Data/Data.json", function(data) {
-			$.each(data, function(id) {
-				hightesID = data[id].id;
-			});
-		});
+		var query = window.location.search.substring(1);
+    	var editid = query.split("=")[1];
+
+    	if(editid!==null) {
+    		var element = localStorage.getItem('ID=' + editid).split(',');
+    		$('#title').val(element[0]);
+    		$('#description').val(element[1]);
+    	}
 
 		$('#save').on('click', function(e) {
 			while (!(localStorage.getItem('ID=' + maximumID) === null)) {
@@ -16,6 +19,10 @@
 
 			localStorage.setItem('ID=' + maximumID, [$('#title').val(), $('#description').val(), "longitude", "latitude"]);
 			maximumID = 1;
+		});
+
+		$('#details').on('click', function(e) {
+			
 		});
 	});
 })();

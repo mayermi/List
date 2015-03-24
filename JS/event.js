@@ -9,5 +9,6 @@
 		
 		$('#title').text(element[0]);
 		$('main').append("<p>" + element[1] + "</p>");
+		$("#edit").attr("href", "./new.html?editid=" + eventid);
 	});
 })();
