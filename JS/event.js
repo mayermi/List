@@ -7,7 +7,10 @@
 
 		var element = localStorage.getItem('ID=' + eventid).split(',');
 		
-		$('#title').text(element[0]);
+        var picturedata = localStorage.getItem('imgID=' + eventid);
+		$('main').append('<img class="thumb" src="' + picturedata + '"/>');
+
+		$('main').append("<p>" + element[0] + "</p>");
 		$('main').append("<p>" + element[1] + "</p>");
 		$("#edit").attr("href", "./new.html?editid=" + eventid);
 	});

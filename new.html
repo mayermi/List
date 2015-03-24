@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Liste</title>
+		<link rel='stylesheet' href='style.css'>
 	</head>
 
 	<body>
@@ -25,11 +26,12 @@
 		</header>
 
 		<main>
-			<button>ImagePlaceholder</button>
+			<output id="picture"></output>
+			<input type="file" id='loadpicture' accept="image/*" capture="camera" />
 
 			<input type='text' id="title"  placeholder='Enter title..'>
 
-			<button>Record</button>
+			<input type="file" accept="audio/*" capture="microphone">
 
 			<input type='text' id="description"  placeholder='Description..'>
 
