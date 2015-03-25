@@ -20,6 +20,25 @@
 		$('main').append("<div id=\"map-canvas\">Please allow us to use your current location so you can appreciate all of our app functions</div>");
 		$("#edit").attr("href", "./new.html?editid=" + eventid);
 
+
+    function checkLocation(longitude, latitude) {
+      console.log(maximumID);
+      while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+        var savedelement = localStorage.getItem('ID=' + maximumID).split(',');
+        var rsavedlongitude = Math.round(savedelement[2] * 1000) / 1000;
+        var rsavedlatitude = Math.round(savedelement[3] * 1000) / 1000;
+        var rlongitude = Math.round(longitude * 1000) / 1000;
+        var rlatitude = Math.round(latitude * 1000) / 1000;
+        
+        if(rsavedlongitude === rlongitude && rsavedlatitude === rlatitude) {
+          alert('You are near ' + savedelement[0] + '!');
+        }
+        
+        maximumID++;
+      }
+      maximumID = 1;
+    }
+
 		var map;
 
 		function initialize() {
@@ -34,6 +53,7 @@
     		navigator.geolocation.getCurrentPosition(function(position) {
 
       		var pos = new google.maps.LatLng(element[3], element[2]);
+          checkLocation(position.coords.longitude, position.coords.latitude);
 
       		var infowindow = new google.maps.InfoWindow({
         		map: map,

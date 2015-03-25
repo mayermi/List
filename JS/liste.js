@@ -26,10 +26,11 @@
 
   			maximumID++;
 		}
+    maximumID = 1;
 
 		getLocation();
 
-      	function showandsave(longitde, latitude) {
+    function showandsave(longitde, latitude) {
 			$('#save').on('click', function(e) {
 				while (!(localStorage.getItem('ID=' + maximumID) === null)) {
   					maximumID++;
@@ -39,6 +40,24 @@
 				maximumID = 1;
 			});
 		}
+
+    function checkLocation(longitude, latitude) {
+      console.log(maximumID);
+      while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+        var savedelement = localStorage.getItem('ID=' + maximumID).split(',');
+        var rsavedlongitude = Math.round(savedelement[2] * 1000) / 1000;
+        var rsavedlatitude = Math.round(savedelement[3] * 1000) / 1000;
+        var rlongitude = Math.round(longitude * 1000) / 1000;
+        var rlatitude = Math.round(latitude * 1000) / 1000;
+        
+        if(rsavedlongitude === rlongitude && rsavedlatitude === rlatitude) {
+          alert('You are near ' + savedelement[0] + '!');
+        }
+        
+        maximumID++;
+      }
+      maximumID = 1;
+    }
 
 		var x = document.getElementById("location");
 
@@ -52,7 +71,8 @@
 
     	function showPosition(position) {
         	longitude = position.coords.longitude;
-        	showandsave(position.coords.longitude, position.coords.latitude)
+        	showandsave(position.coords.longitude, position.coords.latitude);
+          checkLocation(position.coords.longitude, position.coords.latitude);
     	}
 
 		function getDate() {
