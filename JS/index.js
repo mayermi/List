@@ -16,7 +16,7 @@
 			while (!(localStorage.getItem('ID=' + maximumID) === null)) {
   				maximumID++;
 			}
-			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, D, k]);
+			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, D, k, getTime(), getDate()]);
 			maximumID = 1;
 		});
 
@@ -51,8 +51,6 @@
               map: map
             });
 
-
-          console.log(elementlist);
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
               return function() {
                 var arrayposition = i+1;
@@ -73,8 +71,8 @@
               	content: 'Location found using HTML5.'
             	});
 
-              // Save current position
               console.log(pos);
+              // Save current position
               D = pos.D;
               k = pos.k;
 
@@ -87,6 +85,31 @@
           	handleNoGeolocation(false);
         	}
       	}
+
+        function getDate() {
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth()+1;
+          var yyyy = today.getFullYear();
+
+          if(dd<10) {
+            dd='0'+dd
+          } 
+
+          if(mm<10) {
+            mm='0'+mm
+          } 
+
+          today = dd+'/'+mm+'/'+yyyy;
+          return today;
+        }   
+
+        function getTime() {
+          d = new Date();
+          datetext = d.toTimeString();
+          datetext = datetext.split(' ')[0];
+          return datetext;
+        }
 
       	function handleNoGeolocation(errorFlag) {
         	if (errorFlag) {
