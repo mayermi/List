@@ -12,12 +12,14 @@
         var savedpicture = localStorage.getItem('imgID=' + urlinfo);
     		$('#title').val(element[0]);
     		$('#description').val(element[1]);
+        $('#longitude').val(element[2]);
+        $('#latitude').val(element[3]);
         var span = document.createElement('span');
         span.innerHTML = ['<img class="thumb" src="' + savedpicture +'"/>'].join('');
         document.getElementById('picture').insertBefore(span, null);
 
     		$('#save').on('click', function(e) {
-				localStorage.setItem('ID=' + urlinfo, [$('#title').val(), $('#description').val(), "longitude", "latitude"]);
+				localStorage.setItem('ID=' + urlinfo, [$('#title').val(), $('#description').val(), $("#longitude").val(), $("#latitude").val()]);
         localStorage.setItem('imgID=' + maximumID, picturedata);
 			});
 
@@ -40,8 +42,18 @@
 		}
 		
 		$('#details').on('click', function(e) {
-		
+      if ($("#longitude").css("visibility") == "hidden") {
+        $('#longitude').css('visibility', 'visible');
+        $('#latitude').css('visibility', 'visible');
+      } else {
+        $('#longitude').css('visibility', 'hidden');
+        $('#latitude').css('visibility', 'hidden');
+      }
+      
+		  
 		});
+
+
 
 		function handleFileSelect(evt) {
     		var files = evt.target.files;

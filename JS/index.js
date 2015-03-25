@@ -1,6 +1,9 @@
 (function() {
 	$(document).ready(function() {
 		console.log('loaded');
+    var maximumID = 1;
+    var D;
+    var k;
 
 		var query = window.location.search.substring(1);
     	var wassaved = query.split("=")[1];
@@ -13,20 +16,50 @@
 			while (!(localStorage.getItem('ID=' + maximumID) === null)) {
   				maximumID++;
 			}
-			console.log('i happen');
-			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, "longitude", "latitude"]);
+			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, D, k]);
 			maximumID = 1;
 		});
 
 		// Show Google Maps
 		var map;
 
+        var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
+
       	function initialize() {
         	var mapOptions = {
-          	zoom: 6
+          	zoom: 20
         	};
         	map = new google.maps.Map(document.getElementById('map-canvas'),
             	mapOptions);
+
+          // Marker
+          var infowindow = new google.maps.InfoWindow();
+          var marker, i;
+
+          var elementlist = [];
+
+          while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+            var element = localStorage.getItem('ID=' + maximumID).split(',');
+            elementlist.push(element);
+            maximumID++;
+          }
+          maximumID = 1;
+
+          for (i = 0; i < elementlist.length; i++) {
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(elementlist[i][3], elementlist[i][2]),
+              map: map
+            });
+
+
+          console.log(elementlist);
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+              return function() {
+                var arrayposition = i+1;
+                window.location = "event.html?id=" + arrayposition ;
+              }
+            })(marker, i));
+          }
 
         	// Try HTML5 geolocation
         	if(navigator.geolocation) {
@@ -39,6 +72,11 @@
               	position: pos,
               	content: 'Location found using HTML5.'
             	});
+
+              // Save current position
+              console.log(pos);
+              D = pos.D;
+              k = pos.k;
 
             	map.setCenter(pos);
           	}, function() {
