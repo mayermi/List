@@ -27,13 +27,57 @@
   			maximumID++;
 		}
 
-		$('#save').on('click', function(e) {
-			while (!(localStorage.getItem('ID=' + maximumID) === null)) {
-  				maximumID++;
-			}
+		getLocation();
 
-			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, "longitude", "latitude"]);
-			maximumID = 1;
-		});
+      	function showandsave(longitde, latitude) {
+			$('#save').on('click', function(e) {
+				while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+  					maximumID++;
+				}
+
+				localStorage.setItem('ID=' + maximumID, [$('#title').val(),, longitude, latitude, getTime(), getDate()]);
+				maximumID = 1;
+			});
+		}
+
+		var x = document.getElementById("location");
+
+    	function getLocation() {
+      		if (navigator.geolocation) {
+        		navigator.geolocation.getCurrentPosition(showPosition);
+      		} else {
+        		location.innerHTML = "Geolocation is not supported by this browser.";
+      		}
+    	}
+
+    	function showPosition(position) {
+        	longitude = position.coords.longitude;
+        	showandsave(position.coords.longitude, position.coords.latitude)
+    	}
+
+		function getDate() {
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth()+1;
+          var yyyy = today.getFullYear();
+
+          if(dd<10) {
+            dd='0'+dd
+          } 
+
+          if(mm<10) {
+            mm='0'+mm
+          } 
+
+          today = dd+'/'+mm+'/'+yyyy;
+          return today;
+        }   
+
+        function getTime() {
+          d = new Date();
+          datetext = d.toTimeString();
+          datetext = datetext.split(' ')[0];
+          return datetext;
+        }
 	});
 })();
