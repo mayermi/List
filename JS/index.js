@@ -8,8 +8,8 @@
 		var query = window.location.search.substring(1);
     	var wassaved = query.split("=")[1];
 
-    	if(wassaved!==null) {
-    		//do some notification
+    	if(wassaved === 'saved') {
+    		alert('Your entry has been successfully saved!');
     	}
 
 		$('#save').on('click', function(e) {
@@ -17,6 +17,7 @@
   				maximumID++;
 			}
 			localStorage.setItem('ID=' + maximumID, [$('#title').val(),, D, k, getTime(), getDate()]);
+      $("#save").attr("href", "index.html?mode=saved");
 			maximumID = 1;
 		});
 
@@ -75,7 +76,7 @@
               // Save current position
               D = pos.D;
               k = pos.k;
-              checkLocation(D,k);
+              //checkLocation(D,k);
 
             	map.setCenter(pos);
           	}, function() {

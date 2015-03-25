@@ -6,8 +6,8 @@
 		var query = window.location.search.substring(1);
     	var wassaved = query.split("=")[1];
 
-    	if(wassaved!==null) {
-    		//do some notification
+    	if(wassaved === 'saved') {
+        alert('Your entry has been successfully saved!');
     	}
 
 		while (!(localStorage.getItem('ID=' + maximumID) === null)) {
@@ -37,6 +37,7 @@
 				}
 
 				localStorage.setItem('ID=' + maximumID, [$('#title').val(),, longitude, latitude, getTime(), getDate()]);
+        $("#save").attr("href", "liste.html?mode=saved");
 				maximumID = 1;
 			});
 		}
@@ -72,7 +73,7 @@
     	function showPosition(position) {
         	longitude = position.coords.longitude;
         	showandsave(position.coords.longitude, position.coords.latitude);
-          checkLocation(position.coords.longitude, position.coords.latitude);
+          //checkLocation(position.coords.longitude, position.coords.latitude);
     	}
 
 		function getDate() {
