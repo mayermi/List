@@ -17,7 +17,7 @@
 
 			$("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + maximumID + " \">"
 					+ '<img class="thumb" src="' + picturedata + '"/>'
-					+ element[0] 
+					+ element[0]
 					+ '<br>'
 					+ element[1]
 					+ '</a>'
