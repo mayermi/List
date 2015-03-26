@@ -15,6 +15,8 @@
       }, 2000);
     }
 
+    checkAnniversary();
+
 		var query = window.location.search.substring(1);
     	var wassaved = query.split("=")[1];
 
@@ -82,11 +84,10 @@
               	content: 'You are here!'
             	});
 
-              console.log(pos);
               // Save current position
               D = pos.D;
               k = pos.k;
-              //checkLocation(D,k);
+              checkLocation(D,k);
 
             	map.setCenter(pos);
           	}, function() {
@@ -98,6 +99,25 @@
         	}
       	}
 
+      	function handleNoGeolocation(errorFlag) {
+        	if (errorFlag) {
+          	var content = 'Error: The Geolocation service failed.';
+        	} else {
+          	var content = 'Error: Your browser doesn\'t support geolocation.';
+        	}
+
+        	var options = {
+          	map: map,
+          	position: new google.maps.LatLng(60, 105),
+          	content: content
+        	};
+
+        	var infowindow = new google.maps.InfoWindow(options);
+        	map.setCenter(options.position);
+      	}
+
+      	google.maps.event.addDomListener(window, 'load', initialize);
+
         function checkLocation(longitude, latitude) {
           console.log(maximumID);
           while (!(localStorage.getItem('ID=' + maximumID) === null)) {
@@ -108,7 +128,7 @@
             var rlatitude = Math.round(latitude * 1000) / 1000;
         
             if(rsavedlongitude === rlongitude && rsavedlatitude === rlatitude) {
-              alert('You are near ' + savedelement[0] + '!');
+              checkLastReminder(maximumID);
             }
            maximumID++;
           }
@@ -140,23 +160,111 @@
           return datetext;
         }
 
-      	function handleNoGeolocation(errorFlag) {
-        	if (errorFlag) {
-          	var content = 'Error: The Geolocation service failed.';
-        	} else {
-          	var content = 'Error: Your browser doesn\'t support geolocation.';
-        	}
+        function checkAnniversary() {
+      while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+          var element = localStorage.getItem('ID=' + maximumID).split(',');
+          if (element[6] === 'year') {
+            if (getDate() === element[8] && getTime() === element[4]) {
+              alert('You are near ' + savedelement[0] + '!');
 
-        	var options = {
-          	map: map,
-          	position: new google.maps.LatLng(60, 105),
-          	content: content
-        	};
+              // save when last reminded
+              localStorage.setItem('ID=' + maximumID, [
+                element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+                getDate()]);
+            }
+          } else if (element[6] === 'six') {
+            getDateMonstLater(6, element);
+          } else if (element[6] === 'three') {
+            getDateMonstLater(3, element);
+          } else if (element[6] === 'one') {
+            getDateMonstLater(1, element);
+          } else if (element[6] === 'never') {
+          }
+          maximumID++;
+        }
+        maximumID = 1;
+    }
 
-        	var infowindow = new google.maps.InfoWindow(options);
-        	map.setCenter(options.position);
-      	}
+    function checkLastReminder(ID) {
+      var element = localStorage.getItem('ID=' + ID).split(',');
+      if (element[7] === 'year') {
+        if (element[8].split("/").pop() < getDate().split("/").pop()) {
+          alert('More than a year ago ' + savedelement[0] + ' happend!');
 
-      	google.maps.event.addDomListener(window, 'load', initialize);
+          // save when last reminded
+          localStorage.setItem('ID=' + maximumID, [
+            element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+            getDate()]);
+        }
+        
+      } else if (element[7] === 'six') {
+        checkBiggerDate(6, element);
+      } else if (element[7] === 'three') {
+        checkBiggerDate(3, element);
+      } else if (element[7] === 'one') {
+        checkBiggerDate(1, element);
+      } else if (element[7] === 'never') {
+      }
+    }
+
+    function getDateMonstLater(numberOfMonthsLater, element) {
+      var start_pos = element[8].indexOf('/') + 1;
+      var end_pos = element[8].indexOf('/',start_pos);
+      var monthXMonsthsLater = parseInt(element[8].substring(start_pos,end_pos)) + numberOfMonthsLater;
+      if (monthXMonsthsLater > 12) {
+        monthXMonsthsLater = monthXMonsthsLater - 12;
+      }
+      var dateXMonsthsLater = element[8].split("/").shift() + '/0' + monthXMonsthsLater +  "/" + element[8].split("/").pop();
+      if (getDate() === dateXMonsthsLater && getTime() === element[4]) {
+        alert(numberOfMonthsLater + 'months ago ' + savedelement[0] + ' happend!');
+
+        // save when last reminded
+        localStorage.setItem('ID=' + maximumID, [
+          element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+          getDate()]);
+      }
+    }
+
+    function checkBiggerDate(numberOfMonthsLater, element) {
+      if (element[8].split("/").pop() === getDate().split("/").pop()) {
+        var start_pos = element[8].indexOf('/') + 1;
+        var end_pos = element[8].indexOf('/',start_pos);
+        var reminderMonth = parseInt(element[8].substring(start_pos,end_pos));
+
+        var start_pos_now = getDate().indexOf('/') + 1;
+        var end_pos_now = getDate().indexOf('/',start_pos);
+        var nowMonth = parseInt(element[8].substring(start_pos_now,end_pos_now));
+
+        if (reminderMonth + numberOfMonthsLater < nowMonth) {
+          alert('More than ' + numberOfMonthsLater + 'months ago ' + savedelement[0] + ' happend!');
+
+          // save when last reminded
+          localStorage.setItem('ID=' + maximumID, [
+            element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+            getDate()]);
+        }
+      } else if (element[8].split("/").pop() < getDate().split("/").pop()) {
+        var start_pos = element[8].indexOf('/') + 1;
+        var end_pos = element[8].indexOf('/',start_pos);
+        var reminderMonth = parseInt(element[8].substring(start_pos,end_pos));
+
+        var start_pos_now = getDate().indexOf('/') + 1;
+        var end_pos_now = getDate().indexOf('/',start_pos);
+        var nowMonth = parseInt(element[8].substring(start_pos_now,end_pos_now));
+
+        if (element[8].split("/").pop() + 1 === getDate().split("/").pop()) {
+          if (reminderMonth + numberOfMonthsLater > 12) {
+            if (reminderMonth + numberOfMonthsLater - 12 < nowMonth) {
+              alert('More than ' + numberOfMonthsLater + 'months ago ' + savedelement[0] + ' happend!');
+
+              // save when last reminded
+              localStorage.setItem('ID=' + maximumID, [
+                element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+                getDate()]);
+            }
+          }
+        }
+      }
+    }
 	});
 })();
