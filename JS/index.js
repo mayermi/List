@@ -5,6 +5,16 @@
     var D;
     var k;
 
+    var hasShownSplashScreen = localStorage.getItem('hasShownSplashScreen') || false;
+    if(hasShownSplashScreen) {
+      $('#splash-screen').hide();
+    } else {
+      setTimeout(function ()  {
+        $('#splash-screen').fadeOut();
+        localStorage.setItem('hasShownSplashScreen', true);
+      }, 2000);
+    }
+
 		var query = window.location.search.substring(1);
     	var wassaved = query.split("=")[1];
 
@@ -69,7 +79,7 @@
             	var infowindow = new google.maps.InfoWindow({
               	map: map,
               	position: pos,
-              	content: 'Location found using HTML5.'
+              	content: 'You are here!'
             	});
 
               console.log(pos);
