@@ -21,7 +21,7 @@
           $('#latitude').val(element[3]);
           $('#time').val(element[4]);
           $('#date').val(element[5]);
-          if (picturedata) {
+          if (savedpicture) {
             $('#img').attr('src', savedpicture);
           }
           $("#atleast").val(element[6]);
@@ -39,7 +39,9 @@
               $("#atleast").val(),
               $("#notmore").val(),
               element[8]]);
-            localStorage.setItem('imgID=' + maximumID, picturedata);
+            if(picturedata) {
+              localStorage.setItem('imgID=' + maximumID, picturedata);
+            }
           });
 
           $("#save").attr("href", "./event.html?id=" + urlinfo);
@@ -65,7 +67,10 @@
               $("#atleast").val(), 
               $("#notmore").val(),
               $("#date").val()]);
-            localStorage.setItem('imgID=' + maximumID, picturedata);
+            if(picturedata) {
+              localStorage.setItem('imgID=' + maximumID, picturedata);
+            }
+
             maximumID = 1;
           });
 
@@ -96,31 +101,35 @@
 		});
 
     function checkAnniversary() {
-      var element = localStorage.getItem('ID=' + urlinfo).split(',');
-      if (element[6] === 'year') {
-        if (getDate() === element[8] && getTime() === element[4]) {
-          alert('You are near ' + savedelement[0] + '!');
+      while (!(localStorage.getItem('ID=' + maximumID) === null)) {
+        var element = localStorage.getItem('ID=' + maximumID).split(',');
+        if (element[6] === 'year') {
+          if (getDate() === element[8] && getTime() === element[4]) {
+            alert('You are close to ' + element[0] + '!');
 
-          // save when last reminded
-          localStorage.setItem('ID=' + maximumID, [
+            // save when last reminded
+            localStorage.setItem('ID=' + maximumID, [
               element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
               getDate()]);
+          }
+        } else if (element[6] === 'six') {
+          getDateMonstLater(6, element);
+        } else if (element[6] === 'three') {
+          getDateMonstLater(3, element);
+        } else if (element[6] === 'one') {
+          getDateMonstLater(1, element);
+        } else if (element[6] === 'never') {
         }
-      } else if (element[6] === 'six') {
-        getDateMonstLater(6, element);
-      } else if (element[6] === 'three') {
-        getDateMonstLater(3, element);
-      } else if (element[6] === 'one') {
-        getDateMonstLater(1, element);
-      } else if (element[6] === 'never') {
+        maximumID++;
       }
+      maximumID = 1;
     }
 
     function checkLastReminder(ID) {
       var element = localStorage.getItem('ID=' + ID).split(',');
       if (element[7] === 'year') {
         if (element[8].split("/").pop() < getDate().split("/").pop()) {
-          alert('More than a year ago ' + savedelement[0] + ' happend!');
+          alert('More than a year ago ' + element[0] + ' happend!');
 
           // save when last reminded
           localStorage.setItem('ID=' + maximumID, [
