@@ -2,23 +2,27 @@
 	$(document).ready(function() {
 		console.log('loaded');
 		var maximumID = 1;
+    var map;
+    var geocoder;
 
 		var query = window.location.search.substring(1);
-    	var eventid = query.split("=")[1];
+    var eventid = query.split("=")[1];
 
 		var element = localStorage.getItem('ID=' + eventid).split(',');
 
+    initializeCityFind();
     checkAnniversary();
 		
-        var picturedata = localStorage.getItem('imgID=' + eventid);
+    var picturedata = localStorage.getItem('imgID=' + eventid);
     if (picturedata) {
       $('main').append('<img class="thumb" src="' + picturedata + '"/>');
     }
 
 		$('main').append("<p>" + element[0] + "</p>");
-		$('main').append("<p>" + element[1] + "</p>");
-		$('main').append("<p>" + element[2] + "</p>");
-		$('main').append("<p>" + element[3] + "</p>");
+    $('main').append("<p id=\'adress\'>" +  "</p>");
+	  $('main').append("<p>" + element[1] + "</p>");
+		//$('main').append("<p>" + element[2] + "</p>");
+		//$('main').append("<p>" + element[3] + "</p>");
 		$('main').append("<p>" + element[4] + "</p>");
 		$('main').append("<p>" + element[5] + "</p>");
 		$('main').append("<div id=\"map-canvas\">Please allow us to use your current location so you can appreciate all of our app functions</div>");
@@ -45,34 +49,34 @@
 
     function checkAnniversary() {
       while (!(localStorage.getItem('ID=' + maximumID) === null)) {
-          var element = localStorage.getItem('ID=' + maximumID).split(',');
-          if (element[6] === 'year') {
-            if (getDate() === element[8] && getTime() === element[4]) {
-              alert('You are near ' + savedelement[0] + '!');
+        var element = localStorage.getItem('ID=' + maximumID).split(',');
+        if (element[6] === 'year') {
+          if (getDate() === element[8] && getTime() === element[4]) {
+            alert('You are close to ' + element[0] + '!');
 
-              // save when last reminded
-              localStorage.setItem('ID=' + maximumID, [
-                element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
-                getDate()]);
-            }
-          } else if (element[6] === 'six') {
-            getDateMonstLater(6, element);
-          } else if (element[6] === 'three') {
-            getDateMonstLater(3, element);
-          } else if (element[6] === 'one') {
-            getDateMonstLater(1, element);
-          } else if (element[6] === 'never') {
+            // save when last reminded
+            localStorage.setItem('ID=' + maximumID, [
+              element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7], 
+              getDate()]);
           }
-          maximumID++;
+        } else if (element[6] === 'six') {
+          getDateMonstLater(6, element);
+        } else if (element[6] === 'three') {
+          getDateMonstLater(3, element);
+        } else if (element[6] === 'one') {
+          getDateMonstLater(1, element);
+        } else if (element[6] === 'never') {
         }
-        maximumID = 1;
+        maximumID++;
+      }
+      maximumID = 1;
     }
 
     function checkLastReminder(ID) {
       var element = localStorage.getItem('ID=' + ID).split(',');
       if (element[7] === 'year') {
         if (element[8].split("/").pop() < getDate().split("/").pop()) {
-          alert('More than a year ago ' + savedelement[0] + ' happend!');
+          alert('More than a year ago ' + element[0] + ' happend!');
 
           // save when last reminded
           localStorage.setItem('ID=' + maximumID, [
@@ -150,7 +154,7 @@
       }
     }
 
-		var map;
+    // MAP
 
 		function initialize() {
   		var mapOptions = {
@@ -159,7 +163,7 @@
   		map = new google.maps.Map(document.getElementById('map-canvas'),
       		mapOptions);
 
-  		// Try HTML5 geolocation
+  		// Try geolocation
   		if(navigator.geolocation) {
     		navigator.geolocation.getCurrentPosition(function(position) {
 
@@ -169,7 +173,7 @@
       		var infowindow = new google.maps.InfoWindow({
         		map: map,
         		position: pos,
-        		content: 'Location found using HTML5.'
+        		content: 'Here happened ' + element[0]
       		});
 
       		map.setCenter(pos);
@@ -218,6 +222,49 @@
 
       today = dd+'/'+mm+'/'+yyyy;
       return today;
+    }
+
+    function getTime() {
+      d = new Date();
+      datetext = d.toTimeString();
+      datetext = datetext.split(' ')[0];
+      return datetext;
+    }
+
+    // GEOCODER
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    } 
+    //Get the latitude and the longitude;
+    function successFunction(position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+      codeLatLng(lat, lng)
+    }
+
+    function errorFunction(){
+      alert("Geocoder failed");
+    }
+
+    function initializeCityFind() {
+      geocoder = new google.maps.Geocoder();
+    }
+
+    function codeLatLng(lat, lng) {
+
+      var latlng = new google.maps.LatLng(lat, lng);
+      geocoder.geocode({'latLng': latlng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[1]) {
+            $('#adress').text(results[0].formatted_address);
+          } else {
+            alert("No results found");
+          }
+        } else {
+          alert("Geocoder failed due to: " + status);
+        }
+      });
     }
 	});
 })();
