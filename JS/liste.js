@@ -15,14 +15,26 @@
 			var element = localStorage.getItem('ID=' + maximumID).split(',');
 			var picturedata = localStorage.getItem('imgID=' + maximumID);
 
-			$("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + maximumID + " \">"
-					+ '<img class="thumb" src="' + picturedata + '"/>'
-					+ element[0]
-					+ '<br>'
-					+ element[1]
-					+ '</a>'
-					+ '</li>'
-				);
+      if(picturedata) {
+        $("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + maximumID + " \">"
+          + '<img class="thumb" src="' + picturedata + '"/>'
+          + element[0]
+          + '<br>'
+          + element[1]
+          + '</a>'
+          + '</li>'
+        );
+      } else {
+        $("#eventlist").append('<li>' + "<a href=\"./event.html?id=" + maximumID + " \">"
+          + element[0]
+          + '<br>'
+          + element[1]
+          + '</a>'
+          + '</li>'
+        );
+      }
+
+			
 
   			maximumID++;
 		}
